@@ -34,7 +34,8 @@ public class Examples {
 
 
     public static void link() {
-        http://seznam.cz
+        http:
+//seznam.cz
         System.out.println("link");
     }
 
@@ -73,7 +74,7 @@ public class Examples {
         System.out.println(input);
     }
 
-    public static void exampleOfWar() {
+    public static void exampleOfVar() {
 
         Map<Integer, String> exampleMap = Map.of(
                 1, "a",
@@ -104,6 +105,7 @@ public class Examples {
         consumer(value2);
 
 
+        // anonymous class
         Consumer<String> consumer = new Consumer<String>() {
             @Override
             public void accept(String s) {
@@ -193,5 +195,58 @@ public class Examples {
 
     private static Integer processData(String str) {
         return Integer.valueOf(str);
+    }
+
+    public static void sealed() {
+
+        switch (getState()) {
+            case Connected validResult -> System.out.println("connected " + validResult.host() + " " + validResult.port());
+            case NotConnected ignored -> throw new IllegalStateException();
+        }
+
+        switch (getState()) {
+            case Connected connected -> {
+                switch (connected) {
+                    case Authenticated authenticated -> System.out.println("authenticated " + authenticated.host() + " " + authenticated.port() + " " + authenticated.user());
+                    case NotAuthenticated notAuthenticated -> System.out.println("authenticated " + notAuthenticated.host() + " " + notAuthenticated.port());
+                }
+            }
+            case NotConnected inValidResult -> throw new IllegalStateException();
+        }
+
+    }
+
+    private static ConnectionState getState() {
+        return switch (1) {
+            case 1 -> new NotAuthenticated("a", 123);
+            default -> new NotConnected();
+        };
+    }
+
+    public static void switchExample() {
+        // old style switch
+        String value;
+        switch (1) {
+            case 1:
+                value = "1";
+                break;
+            case 2:
+                value = "2";
+                break;
+            default:
+                value = "0";
+                break;
+        }
+        // new style switch
+        String value2 = switch (1) {
+            case 1 -> "1";
+            case 2 -> "2";
+            default -> "0";
+        };
+    }
+
+    public static void record() {
+        boolean equals = new Authenticated("a", 1, "2").equals(new Authenticated("a", 1, "2"));
+        System.out.println(equals);
     }
 }

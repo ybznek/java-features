@@ -8,6 +8,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import static java.util.function.Predicate.not;
 import static java.util.stream.Collectors.toSet;
 
 /**
@@ -136,20 +137,26 @@ public class Examples {
     public static void streams() {
         String[] strings = {"", "1", "2", "3"};
 
-        Set<Integer> processed2 = new HashSet<>();
+        Set<Integer> processed1 = new HashSet<>();
         for (String x : strings) {
             if (!x.isEmpty()) {
                 Integer integer = processData(x);
-                processed2.add(integer);
+                processed1.add(integer);
             }
         }
 
-        Set<Integer> processed = Arrays.stream(strings)
+        Set<Integer> processed2 = Arrays.stream(strings)
                 .filter(x -> !x.isEmpty())
+                .map(str -> processData(str))
+                .collect(toSet());
+
+        Set<Integer> processed3 = Arrays.stream(strings)
+                .filter(not(String::isEmpty))
                 .map(Examples::processData)
                 .collect(toSet());
 
-
+        // java 16 toList
+        List<String> result = List.of("1", "2", "3").stream().map(x -> x + x).toList();
     }
 
     public static void functions() {
@@ -159,7 +166,7 @@ public class Examples {
         filterData2(data, new HashSet<>(whitelist));
         filterData3(data, new HashSet<>(whitelist));
         filterData4(data, whitelist::contains);
-        filterData5inplace(data, whitelist::contains);
+        filterData5inplace(new ArrayList<>(data), whitelist::contains);
     }
 
     private static List<String> filterData1(List<String> data, Set<String> whitelist) {
@@ -198,12 +205,13 @@ public class Examples {
     }
 
     public static void sealed() {
-
+        // high level switch
         switch (getState()) {
             case Connected validResult -> System.out.println("connected " + validResult.host() + " " + validResult.port());
             case NotConnected ignored -> throw new IllegalStateException();
         }
 
+        // multi-level switch
         switch (getState()) {
             case Connected connected -> {
                 switch (connected) {
@@ -214,6 +222,12 @@ public class Examples {
             case NotConnected inValidResult -> throw new IllegalStateException();
         }
 
+        // condition
+        switch (getState()) {
+            case Connected validResult && validResult.port() == 123 -> System.out.println("connected to known port");
+            case Connected validResult -> System.out.println("connected " + validResult.host() + " " + validResult.port());
+            case NotConnected ignored -> throw new IllegalStateException();
+        }
     }
 
     private static ConnectionState getState() {
@@ -233,12 +247,17 @@ public class Examples {
             case 2:
                 value = "2";
                 break;
+            case -2:
+                value = "neg";
+            case -1:
+                value = "neg";
             default:
                 value = "0";
                 break;
         }
         // new style switch
         String value2 = switch (1) {
+            case -1, -2 -> "neg";
             case 1 -> "1";
             case 2 -> "2";
             default -> "0";
@@ -248,5 +267,19 @@ public class Examples {
     public static void record() {
         boolean equals = new Authenticated("a", 1, "2").equals(new Authenticated("a", 1, "2"));
         System.out.println(equals);
+    }
+
+    public static void instanceOf() {
+        Object variable = "sad";
+        if (variable instanceof String str) {
+            System.out.println(str.length());
+        }
+    }
+
+    public static void textBlocks() {
+        String block = """
+                block
+                """;
+        System.out.println(block);
     }
 }

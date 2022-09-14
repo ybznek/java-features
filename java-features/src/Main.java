@@ -7,12 +7,13 @@ public class Main {
         Examples.link();
         Examples.computeIfAbsent();
         Examples.exampleOfVar();
-        Examples.streams();
-        Examples.record();
         Examples.switchExample();
+        Examples.streams();
+        Examples.instanceOf();
+        Examples.textBlocks();
+        Examples.functions();
+        Examples.record();
         Examples.sealed();
-
-
     }
 
 

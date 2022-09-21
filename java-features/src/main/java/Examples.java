@@ -18,6 +18,8 @@ class ExtraClass {
 
 }
 
+
+
 public class Examples {
 
 
@@ -281,5 +283,9 @@ public class Examples {
                 block
                 """;
         System.out.println(block);
+    }
+
+    public static void inlineClass() {
+
     }
 }
